@@ -12,5 +12,5 @@ jobs:
         uses: actions/checkout@v4
       - name: Run Test
         run: |
-          chmod +x ./test/test-time.sh
-          ./test/test-time.sh
+          chmod +x ./time/time-metrics-app.sh
+          ./test/time-metrics-app.sh
