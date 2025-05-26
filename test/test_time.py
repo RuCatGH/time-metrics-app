@@ -1,4 +1,4 @@
-from app_v1 import app
+from ../app_v1 import app
 
 def test_time_route():
     with app.test_client() as client:
