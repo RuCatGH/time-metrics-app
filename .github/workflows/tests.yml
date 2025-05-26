@@ -1,32 +1,35 @@
-name: Run Tests
 on:
-  push:
-    branches-ignore:
-      - 'main'
-      - 'dev'
-  pull_request:
-    branches:
-      - 'dev'
+  push: 
+    branches: ['*']
+  pull_request: 
+    branches: ['*']
 
 jobs:
-  test:
+  test_time_route:
     runs-on: self-hosted
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Install dependencies
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
         run: |
           python3 -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
-      - name: Run app in background
+
+      - name: Run app
         run: |
           source venv/bin/activate
-          nohup python app_v1.py &
+          nohup python app_v1.py > app.log 2>&1 &
           echo $! > app.pid
-      - name: Run tests
+          sleep 3
+
+      - name: Run Test
         run: |
-          chmod +x test/unit-tests.sh
+          chmod +x ./test/unit-tests.sh
           ./test/unit-tests.sh
+
       - name: Stop app
-        run: kill -9 `cat app.pid`
+        run: |
+          if [ -f app.pid ]; then
+            kill -9 $(cat app.pid)
+          fi
