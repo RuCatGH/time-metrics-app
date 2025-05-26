@@ -1,23 +1,23 @@
-name: Test /time endpoint
+name: Run Tests
 
-on:
-  push:
-    branches: ['*']
-  pull_request:
-    branches: ['*']
+on: [push, pull_request]
 
 jobs:
   test:
     runs-on: self-hosted
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
 
       - name: Install dependencies
-        run: |
-          pip install flask requests
+        run: pip install flask requests pytest
+
+      - name: Start server
+        run: nohup python app.py & sleep 2
 
       - name: Run tests
-        run: |
-          chmod +x ./test/unit-tests.sh
-          ./test/unit-tests.sh
+        run: pytest
