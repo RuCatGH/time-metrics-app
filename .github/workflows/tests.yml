@@ -1,0 +1,32 @@
+name: Run Tests
+on:
+  push:
+    branches-ignore:
+      - 'main'
+      - 'dev'
+  pull_request:
+    branches:
+      - 'dev'
+
+jobs:
+  test:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+      - name: Run app in background
+        run: |
+          source venv/bin/activate
+          nohup python app_v1.py &
+          echo $! > app.pid
+      - name: Run tests
+        run: |
+          chmod +x test/unit-tests.sh
+          ./test/unit-tests.sh
+      - name: Stop app
+        run: kill -9 `cat app.pid`
