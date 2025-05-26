@@ -1,6 +1,9 @@
-import requests
+from app import app
 
 def test_time_route():
-    response = requests.get("http://localhost:5000/time")
-    assert response.status_code == 200
-    assert response.json()["time"] != 0
+    with app.test_client() as client:
+        response = client.get("/time")
+        assert response.status_code == 200
+        data = response.get_json()
+        assert "time" in data
+        assert data["time"] > 0

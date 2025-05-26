@@ -1,12 +1,13 @@
 name: Run Tests
+
 on: [push, pull_request]
 
 jobs:
   test:
     runs-on: self-hosted
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -14,21 +15,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: |
-          pip install flask requests pytest
-
-      - name: Start server
-        run: |
-          nohup python app.py > app.log 2>&1 &
-          echo $! > app.pid
-          sleep 3  # Ждём, пока сервер запустится
+        run: pip install flask pytest
 
       - name: Run tests
-        run: |
-          python -m pytest test/test_time.py -v
-
-      - name: Stop app
-        run: |
-          if [ -f app.pid ]; then
-            kill -9 $(cat app.pid)
-          fi
+        run: pytest
