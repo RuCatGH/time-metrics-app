@@ -19,3 +19,5 @@ jobs:
 
       - name: Run tests
         run: pytest
+      - name: End
+        run: echo 'Succesful tests'
